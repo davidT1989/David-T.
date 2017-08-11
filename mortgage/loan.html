@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mortgage Calculator</title>
+		<meta charset="utf-8">
+	 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="mdb.min.css">
+	<link rel="stylesheet" type="text/css" href="loan.css">
+</head>
+<body>
+
+	<div class="container">
+		<div class="row">&nbsp;</div>
+		<div class="row justify-content-md-center">
+			<div class="col-lg-4 col-md-6 default-color-dark" style="float:left; border-radius:10px;">
+				<p class="z-depth-5 orange-text text-center" style="font-size:28px;">Mortgage Calcaulator</p>
+				<form name="loan_form">
+					<table style="margin:10px;">
+						<tr>
+							<td class="yellow-text text-center">Loan Amount: </td>
+							<td><input type="text" style="color:white; font-size:24px;" class="text-center" name="loan_amt" size="10"></td>
+							<p id="alert_amount" class="red-text"><b></b></p>
+						</tr>
+						<tr>
+							<td class="yellow-text text-center">Number of Months: </td>
+							<td><input type="text" style="color:white; font-size:24px;" class="text-center" name="months" size="10"></td>
+							<p id="alert_months" class="red-text"><b></b></p>
+						</tr>
+						<tr>
+							<td class="yellow-text text-center">Annual Interest Rate(%): </td>
+							<td><input type="text" style="color:white; font-size:24px;" class="text-center" name="rate" size="10"></td>
+							<p id="alert_rate" class="red-text"><b></b></p>
+						</tr>
+						<tr>
+							<td class="yellow-text text-center">Extra Monthly Payment: </td>
+							<td><input type="text" style="color:white; font-size:24px;" class="text-center" name="extra" size="10"></td>
+							<p id="alert_extra" class="red-text"><b></b></p>
+						</tr>
+                    </table>
+					<input type="button" class="btn btn-success z-depth-4 waves-effect waves-light" id="myBtn" value="Calculate">
+					<input type="button" class="btn btn-primary z-depth-4 waves-effect waves-light" onclick="startOver()" value="Start Over">
+														
+				</form>	
+			</div>
+		</div>
+		<div id="myModal" class="modal">
+			<div class="modal_content">
+				<span class="close">&times;</span>
+				<div id="loan_info">
+					
+				</div>
+				<div id="table_header">
+					<table class="table">
+						<tr>
+							<td align="center" class="blue-grey light-3"><b>Pmt</b></td>
+							<td align="center" class="primary-color"><b>Payment</b></td>
+							<td align="center" class="green darken-1"><b>Principal</b></td>
+							<td align="center" class="yellow darken-1"><b>Interest</b></td>
+							<td align="center" class="brown darken-2"><b>Interest Paid</b></td>
+							<td align="center" class="red darken-1"><b>Balance</b></td>
+						</tr>
+						
+					</table>
+				</div>
+				<div id="table">
+					
+				</div>
+				<div id="graph" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+			</div>
+	</div>
+	
+	<!-- SCRIPTS -->
+	<!--Charts-->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	
+    <!-- JQuery -->
+    <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="tether.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <!--Material Design Bootstrap tooltips -->
+    <script type="text/javascript" src="mdb.min.js"></script>
+    <script type="text/javascript" src="loan.js"></script>
+    <script type="text/javascript">
+    // Get the modal
+		var modal = document.getElementById('myModal');
+
+		// Get the button that opens the modal
+		var btn = document.getElementById("myBtn");
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+
+		// When the user clicks the button, open the modal 
+		btn.onclick = function() {
+		    modal.style.display = "block";
+		    validate();
+		    
+		}
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
+		    modal.style.display = "none";
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
+    </script>
+</body>
+</html>
