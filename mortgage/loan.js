@@ -23,21 +23,25 @@ function validate(){
 	if ( loan_amt <= 0 || isNaN(Number(loan_amt)) ){
 		document.getElementById("alert_amount").innerHTML = "Please enter a valid loan amount.";
 		document.loan_form.loan_amt.value = "";
+		modal.style.display = "none";
 	}
 
 	else if (months <=0 || parseInt(months) != months){
 		document.getElementById("alert_months").innerHTML ="Please enter a valid number of months.";
 		document.loan_form.months.value = "";
+		modal.style.display = "none";
 	}
 
 	else if(rate <= 0 || isNaN(Number(rate))){
 		document.getElementById("alert_rate").innerHTML = "Please enter a valid interest rate.";
-		document.loan_form.rate.value = ""
+		document.loan_form.rate.value = "";
+		modal.style.display = "none";
 	}
 
 	else if(extra <= 0 || isNaN(Number(extra))){
 		document.getElementById("alert_extra").innerHTML = "Please enter a valid extra payment.";
 		document.loan_form.extra.value = "0";
+		modal.style.display = "none";
 	}
 	else{
 
@@ -51,35 +55,26 @@ function calculate(loan_amt, months, rate, extra){
 	var monthly_payment = (loan_amt*i/(1 - (Math.pow(1/(1 + i), months)))).toFixed(2)
 	var info="";
 	var total = Number(monthly_payment) + Number(extra);
-	info += "<table class='table'>";
-	info += "<thead><tr><th>Loan Amount:</th>";
-	info += "<td align='right'>"+loan_amt+"</td></tr>";
-
-	info += "<tr><td>Number of Months:</td>";
-	info += "<td align='right'>"+months+"</td></tr>";
-
-	info += "<tr><td>Interest Rate:</td>";
-	info += "<td align='right'>"+rate+"</td></tr>";
-
-	info += "<tr><td>Monthly Payment:</td>";
-	info += "<td align='right'>"+monthly_payment+"</td></tr>";
-
-	info += "<tr><td>Extra:</td>";
-	info += "<td align='right'>"+extra+"</td></tr>";
-
-	info += "<tr><td>Total Payment:</td>";
-	info += "<td align='right'>"+total+"</td></tr>";
-
-	info += "</thead></table>";
+	info += "<table class='table table-responsive' cellspacing='0' cellpadding='1'>";
+	
+	info += "<tr><td align='center' width='25%'>"+months+"</td>";
+	info += "<td align='center' width='25%'>"+monthly_payment+"</td>";
+	info += "<td align='center' width='25%'>"+extra+"</td>";
+	info += "<td align='center' width='25%'>"+total+"</td></tr>";
+	info += "<tr><td align='center' width='25%'>Number of Months</td>";
+	info += "<td align='center' width='25%'>Monthly Payment</td>";
+	info += "<td align='center' width='25%'>Extra</td>";
+	info += "<td align='center' width='25%'>Total Payment</td></tr>";
+	info += "</table>";
 
 	document.getElementById("loan_info").innerHTML = info;
 
 	var amortization ="";
-	amortization += "<table class='table'>";
+	amortization += "<table class='table' cellspacing='0' cellpadding='1' style='max-width:100%;'>";
 
 	amortization += "<tr>";
 	amortization += "<td width='30'>0</td>";
-	amortization += "<td width='60'>&nbsp;</td>";
+	
 	amortization += "<td width='60'>&nbsp;</td>";
 	amortization += "<td width='60'>&nbsp;</td>";
 	amortization += "<td width='85'>&nbsp;</td>";
@@ -109,13 +104,12 @@ function calculate(loan_amt, months, rate, extra){
 
 		//display row
 		var pay = Number(monthly_payment).toFixed(2);
-		var curbal = (Number(current_balance)/1000).toFixed(2);
+		var curbal = Number(current_balance).toFixed(2);
 		var tobal = Number(towards_balance).toFixed(2);
 		var tointer = Number(towards_interest).toFixed(2);
 		var totalinter = Number(total_interest).toFixed(2);
 		amortization += "<tr>";
 		amortization += "<td>"+payment_counter+"</td>";
-		amortization += "<td>"+pay+"</td>";
 		amortization += "<td>"+tobal+"</td>";
 		amortization += "<td>"+tointer+"</td>";
 		amortization += "<td>"+totalinter+"</td>";
@@ -123,20 +117,20 @@ function calculate(loan_amt, months, rate, extra){
 		amortization +="</tr>";
 
 		payment_counterArr.push(payment_counter);
-		data[0].push(parseInt(pay));
+		data[0].push(parseInt(tobal));
 		data[1].push(parseInt(tointer));
 		data[2].push(parseInt(totalinter));
-		data[3].push(parseInt(totalinter));
-		data[4].push(parseInt(curbal));
+		data[3].push(parseInt(curbal));
 
 		payment_counter++;
 	}
 
 	var seriesData = [];
-	var nameArr = ["pay", "tobal", "tointer", "totalinter", "curbal"];
-	var typeArr = ["spline", "column","column","column","spline"];
-	for(var i = 0; i < 5; i++){
-		var tmpData = {name: nameArr[i], data: data[i], type: typeArr[i]};
+	var nameArr = [ "tobal", "tointer", "totalinter", "curbal"];
+	var typeArr = [ "column","column","column","spline"];
+	var yAxisArr = [0,0,0,1];
+	for(var i = 0; i < 4; i++){
+		var tmpData = {name: nameArr[i], data: data[i], type: typeArr[i], yAxis: yAxisArr[i]};
 		seriesData.push(tmpData);
 	}
 	
@@ -147,41 +141,35 @@ function calculate(loan_amt, months, rate, extra){
 
 
 	Highcharts.chart('graph', {
-		chart: {
+	    chart: {
 	        type: 'column'
 	    },
 	    title: {
 	        text: 'Mortgage Calculator'
 	    },
-	    subtitle: {
-	        text: 'Source: DavidTan.com'
-	    },
-	    legend: {
-            layout: "horizontal",
-            verticalAlign: "top",
-        },
-
-	    xAxis: {
-	        categories: payment_counterArr
-	    },
-	    yAxis: {
+	    yAxis: [{
+	        min: 0,
 	        title: {
-	            text: 'Currency($)'
+	            text: 'Towards Balance, Towards Interest, Total Interest'
+	        }
+	    }, {
+	        title: {
+	            text: 'Current Balance($)'
 	        },
-	        
-	    },
+	        opposite: true
+	    }],
+	   
 	    plotOptions: {
 	        line: {
 	            dataLabels: {
 	                enabled: true
 	            },
 	            enableMouseTracking: true
-	        },
-	       
+	        }
 	    },
 	    series: seriesData
 	});
-
-	
 }
+
+
 
